@@ -1,5 +1,7 @@
 # Project: Manga Recommender System Using Machine Learning!
 
+<img src="assets/banner.gif" alt="banner" width="600">
+
 ## Table of Contents
 
 - [Project Overview](#project-overview)
@@ -17,11 +19,17 @@ Recommendation systems are increasingly important in today’s world, where peop
 
 <h2 id="demo">Demo</h2>
 
+<img src="assets/demo1.png" alt="demo1" width="70%">
+<img src="assets/demo2.png" alt="demo2" width="70%">
+<img src="assets/demo3.png" alt="demo3" width="70%">
+
 ---
 
 <h2 id="dataset">Dataset Used</h2>
 
 * [Dataset link](https://www.kaggle.com/datasets/victorsoeiro/manga-manhwa-and-manhua-dataset)
+
+<img src="assets/dataset.png" alt="dataset" width="70%">
 
 ---
 

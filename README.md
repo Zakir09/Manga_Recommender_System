@@ -13,7 +13,7 @@
 ---
 
 <h2 id="project-overview">Project Overview</h2>
-Recommendation systems are increasingly important in today’s world, where people have limited time and an overwhelming number of choices. Our Manga Recommendation System helps users discover new manga, manhwa, and manhua based on their selections. By choosing a title from a provided list, the system analyzes its description and tags to suggest similar content, making it easier to find stories that match the user's interests.
+Recommendation systems are increasingly important in today’s world, where people have limited time and an overwhelming number of choices. This Manga Recommendation System helps users discover new manga, manhwa, and manhua based on their selections. By choosing a title from a provided list, the system analyzes its description and tags to suggest similar content, making it easier to find stories that match the user's interests.
 
 ---
 

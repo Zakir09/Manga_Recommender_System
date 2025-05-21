@@ -4,7 +4,13 @@ import pickle
 import requests
 from io import BytesIO
 
-st.set_page_config(layout="centered")
+# --- Page Setup ---
+st.set_page_config(
+    page_title="ChibiChoice",
+    page_icon="assets/cloud.png",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
 
 # Function to load compressed pickle from URL
 @st.cache_resource
@@ -17,15 +23,16 @@ def load_pickle_from_url(url):
 # --- Get Cover Image from Jikan API ---
 @st.cache_data(show_spinner=False)
 def get_manga_image_url(title):
-    response = requests.get('https://api.jikan.moe/v4/manga', params={'q': title, 'limit': 1}, timeout=10)
     try:
+        response = requests.get('https://api.jikan.moe/v4/manga', params={'q': title, 'limit': 1}, timeout=5)
+        response.raise_for_status()
         data = response.json()
         image_url = data['data'][0]['images']['jpg']['large_image_url']
         return image_url
-    except (IndexError, KeyError):
+    except (requests.exceptions.RequestException, IndexError, KeyError):
         return None
 
-# Define handlers
+
 # Define handlers with looping
 def go_previous():
     st.session_state.current_index = (
@@ -37,13 +44,14 @@ def go_next():
         st.session_state.current_index + 1
     ) % len(st.session_state.recommendations)
 
+
 # --- Recommendation Logic ---
 def recommend(manga):
     index = mangas[mangas['title'] == manga].index[0]
     distances = sorted(list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
 
     recommended = []
-    for i in distances[1:11]:  # Top 10 recommendations
+    for i in distances[1:21]:  # Top 20 recommendations
         entry = {
             "title": mangas.iloc[i[0]].title,
             "description": mangas.iloc[i[0]].description,
@@ -53,29 +61,43 @@ def recommend(manga):
         recommended.append(entry)
     return recommended
 
+
 # Remote file URLs
 manga_url = 'https://huggingface.co/datasets/Zakir09/manga-artifacts/resolve/main/manga_list.pkl.gz'
 similarity_url = 'https://huggingface.co/datasets/Zakir09/manga-artifacts/resolve/main/similarity.pkl.gz'
-
-# --- Load Data from Hugging Face ---
-# with gzip.open('artifacts/manga_list.pkl.gz', 'rb') as f:
-#     mangas = pickle.load(f)
-
-# with gzip.open('artifacts/similarity.pkl.gz', 'rb') as f:
-#     similarity = pickle.load(f)
 
 # --- Load Data from Hugging Face ---
 mangas = load_pickle_from_url(manga_url)
 similarity = load_pickle_from_url(similarity_url)
 
 # --- Streamlit UI Setup ---
-st.title("📚 Manga Recommender (TESTING)")
-st.subheader("Get manga recommendations based on your favorite mangas!")
+col1, col2 = st.columns([1, 6])
+with col1:
+    st.image("assets/ramen-bowl.png", width=64)
+with col2:
+    st.markdown("## ChibiChoice")
+    st.caption("Smart, fun manga picks — tailored to your taste.")
+
 
 st.image('artifacts/banner.jpg', use_container_width=True)
 
 manga_list = mangas['title'].values
-selected_manga = st.selectbox("Type or Select a manga to get recommendations", manga_list)
+
+# Add a placeholder option to the beginning of the list
+manga_options = ["Choose an option"] + list(mangas['title'].values)
+
+selected_manga = st.selectbox(
+    "Type or Select a manga to get recommendations",
+    manga_options
+)
+
+# Only show button if an actual manga is selected
+if selected_manga != "Choose an option":
+    if st.button("Show Recommendations"):
+        st.session_state.recommendations = recommend(selected_manga)
+        st.session_state.current_index = 0
+else:
+    st.info("Please select a manga title to get recommendations.")
 
 # Session state for index and recommendations
 if 'current_index' not in st.session_state:
@@ -83,10 +105,6 @@ if 'current_index' not in st.session_state:
 if 'recommendations' not in st.session_state:
     st.session_state.recommendations = []
 
-# Generate recommendations
-if st.button("Show Recommendations"):
-    st.session_state.recommendations = recommend(selected_manga)
-    st.session_state.current_index = 0  # reset view
 
 # Display recommendation
 if st.session_state.recommendations:

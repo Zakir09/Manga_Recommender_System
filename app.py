@@ -4,7 +4,10 @@ import pickle
 import requests
 from io import BytesIO
 
+st.set_page_config(layout="centered")
+
 # Function to load compressed pickle from URL
+@st.cache_resource
 def load_pickle_from_url(url):
     response = requests.get(url)
     response.raise_for_status()
@@ -12,8 +15,9 @@ def load_pickle_from_url(url):
         return pickle.load(f)
 
 # --- Get Cover Image from Jikan API ---
+@st.cache_data(show_spinner=False)
 def get_manga_image_url(title):
-    response = requests.get('https://api.jikan.moe/v4/manga', params={'q': title, 'limit': 1})
+    response = requests.get('https://api.jikan.moe/v4/manga', params={'q': title, 'limit': 1}, timeout=10)
     try:
         data = response.json()
         image_url = data['data'][0]['images']['jpg']['large_image_url']
@@ -54,15 +58,18 @@ manga_url = 'https://huggingface.co/datasets/Zakir09/manga-artifacts/resolve/mai
 similarity_url = 'https://huggingface.co/datasets/Zakir09/manga-artifacts/resolve/main/similarity.pkl.gz'
 
 # --- Load Data from Hugging Face ---
-with gzip.open('artifacts/manga_list.pkl.gz', 'rb') as f:
-    mangas = pickle.load(f)
+# with gzip.open('artifacts/manga_list.pkl.gz', 'rb') as f:
+#     mangas = pickle.load(f)
 
-with gzip.open('artifacts/similarity.pkl.gz', 'rb') as f:
-    similarity = pickle.load(f)
+# with gzip.open('artifacts/similarity.pkl.gz', 'rb') as f:
+#     similarity = pickle.load(f)
+
+# --- Load Data from Hugging Face ---
+mangas = load_pickle_from_url(manga_url)
+similarity = load_pickle_from_url(similarity_url)
 
 # --- Streamlit UI Setup ---
-st.set_page_config(layout="centered")
-st.title("📚 Manga Recommender")
+st.title("📚 Manga Recommender (TESTING)")
 st.subheader("Get manga recommendations based on your favorite mangas!")
 
 st.image('artifacts/banner.jpg', use_container_width=True)

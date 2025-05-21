@@ -118,7 +118,7 @@ if st.session_state.recommendations:
     if image_url:
         st.image(image_url, width=300)
     else:
-        st.image('artifacts/banner.jpg', width=300)
+        st.image('assets/banner-page.jpg', width=300)
 
 
     # Show info

@@ -191,7 +191,3 @@ Now run,
 ```bash
 streamlit run app.py
 ```
-
----
-
-<h2 id="project-structure">Project Structure</h2>

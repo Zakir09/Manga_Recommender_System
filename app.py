@@ -114,18 +114,20 @@ if st.session_state.recommendations:
     # Fetch image live
     image_url = get_manga_image_url(current['title'])
 
-    # Show image
-    if image_url:
-        st.image(image_url, width=300)
-    else:
-        st.image('assets/banner-page.jpg', width=300)
+    # Side-by-side layout
+    img_col, info_col = st.columns([1, 2])
 
+    with img_col:
+        if image_url:
+            st.image(image_url, width=250)
+        else:
+            st.image('assets/banner-page.jpg', width=250)
 
-    # Show info
-    st.markdown("### " + current['title'])
-    st.write(f"**Tags:** {current['tags']}")
-    st.write(f"**Description:** {current['description']}")
-    st.write(f"**Rating:** ⭐ {current['rating']}")
+    with info_col:
+        st.markdown(f"### {current['title']}")
+        st.write(f"**Tags:** {current['tags']}")
+        st.write(f"**Description:** {current['description']}")
+        st.write(f"**Rating:** ⭐ {current['rating']}")
 
     # Navigation buttons
     col1, col2, col3 = st.columns([1, 2, 1])

@@ -79,7 +79,7 @@ with col2:
     st.caption("Smart, fun manga picks — tailored to your taste.")
 
 
-st.image('artifacts/banner.jpg', use_container_width=True)
+st.image('assets/banner-page.jpg', use_container_width=True)
 
 manga_list = mangas['title'].values
 
